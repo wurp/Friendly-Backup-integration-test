@@ -1,0 +1,14 @@
+test/integ/happy1/config/db/
+tmp.pl
+classes
+*.class
+test/integ/happy1/config/restore-dir
+test/integ/happy2/config1/restore-dir
+*.jad
+*~
+friendly-backup.jar
+*.log
+test/integ/happy2/config*/db/
+out*
+*.out
+tmp
