@@ -23,6 +23,14 @@ public class IntegrationTestCase extends TestCase {
         String dir1Canonical = dir1.getCanonicalPath();
         String dir2Canonical = dir2.getCanonicalPath();
         
+        if( !dir1.exists() ) {
+        	return false;
+        }
+        
+        if( !dir2.exists() ) {
+        	return false;
+        }
+        
         if( allFiles1.size() == allFiles2.size() ) {
             for(int i = 0; i < allFiles1.size(); ++i) {
                 File file1 = allFiles1.get(i);

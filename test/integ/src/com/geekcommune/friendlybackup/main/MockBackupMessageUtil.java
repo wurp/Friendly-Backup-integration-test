@@ -1,6 +1,5 @@
 package com.geekcommune.friendlybackup.main;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,11 +35,6 @@ public class MockBackupMessageUtil extends BackupMessageUtil {
     }
 
     @Override
-    public void cancelListen(HashIdentifier id) {
-        dontListenList.add(id);
-    }
-
-    @Override
     public void queueMessage(
             Message msg) {
         Message.State endState = Message.State.Error;
@@ -61,8 +55,6 @@ public class MockBackupMessageUtil extends BackupMessageUtil {
                                     Signature.INTERNAL_SELF_SIGNED,
                                     vmsm.getDataHashID()));
                     endState = Message.State.Finished;
-                } catch (SQLException e) {
-                    log.error(e.getMessage(), e);
                 } catch (FriendlyBackupException e) {
                     log.error(e.getMessage(), e);
                 }
@@ -78,14 +70,10 @@ public class MockBackupMessageUtil extends BackupMessageUtil {
                     log.info("Retrieved " + (data == null ? null : data.length) + " bytes for key " + key);
 
                     if( data == null ) {
-                        try {
-                            byte[] dsdata = DataStore.instance().getData(rdm.getHashIDOfDataToRetrieve());
-                            log.info("Retrieved " + (dsdata == null ? null : dsdata.length) + " bytes for key " + rdm.getHashIDOfDataToRetrieve());
-                            rdm.handleResponse(makeMockDataMessage(dsdata));
-                            endState = Message.State.Finished;
-                        } catch (SQLException e) {
-                            log.error(e.getMessage(), e);
-                        }
+                        byte[] dsdata = DataStore.instance().getData(rdm.getHashIDOfDataToRetrieve());
+                        log.info("Retrieved " + (dsdata == null ? null : dsdata.length) + " bytes for key " + rdm.getHashIDOfDataToRetrieve());
+                        rdm.handleResponse(makeMockDataMessage(dsdata));
+                        endState = Message.State.Finished;
                     } else {
                         rdm.handleResponse(makeMockDataMessage(data));
                         endState = Message.State.Finished;

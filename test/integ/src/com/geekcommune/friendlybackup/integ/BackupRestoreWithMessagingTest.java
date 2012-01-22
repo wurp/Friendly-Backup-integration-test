@@ -22,6 +22,12 @@ public class BackupRestoreWithMessagingTest extends IntegrationTestCase {
         //wait for everyone to get started listening
         Thread.sleep(100);
 
+        //clean out the db
+        for(TestNode tn : testNodes) {
+            File dbRoot = tn.getDBFile();
+            cleanDirectory(dbRoot.getParentFile());
+        }
+        
         testNodes[0].backup();
         
         tryRestore();

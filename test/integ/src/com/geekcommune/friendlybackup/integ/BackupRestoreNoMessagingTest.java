@@ -2,7 +2,6 @@ package com.geekcommune.friendlybackup.integ;
 
 import junit.framework.Assert;
 
-import com.geekcommune.communication.MessageUtil;
 import com.geekcommune.friendlybackup.communication.BackupMessageUtil;
 import com.geekcommune.friendlybackup.config.SwingUIKeyDataSource;
 import com.geekcommune.friendlybackup.main.App;
@@ -33,7 +32,6 @@ public class BackupRestoreNoMessagingTest extends IntegrationTestCase {
             setPassphrase(passphrase);
 
         BackupMessageUtil.setInstance(new MockBackupMessageUtil(App.getBackupConfig()));
-        MessageUtil.setInstance(BackupMessageUtil.instance());
         
         cleanDirectory(App.getBackupConfig().getRestoreRootDirectory());
     }

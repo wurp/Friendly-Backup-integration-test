@@ -114,4 +114,8 @@ public class TestNode {
         return (File) invokeMethod(backupConfig, "getRestoreRootDirectory", new String[0], new Object[0]);
     }
 
+	public File getDBFile() throws Exception {
+        return (File) invokeMethod(backupConfig, "getDBFile", new String[0], new Object[0]);
+	}
+
 }
