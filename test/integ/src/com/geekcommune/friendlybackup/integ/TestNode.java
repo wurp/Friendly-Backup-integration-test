@@ -8,9 +8,7 @@ import java.net.URLClassLoader;
 public class TestNode {
 
     private URLClassLoader cl;
-    private Object backupConfig;
-    private Object backup;
-    private Object restore;
+	private String configFilePath;
     
     public TestNode(String configFilePath) throws Exception {
         cl = new URLClassLoader(
@@ -18,31 +16,13 @@ public class TestNode {
                 ClassLoader.getSystemClassLoader().getParent()
             );
 
+        this.configFilePath = configFilePath;
+        
         invokeStaticMethod(
-                "com.geekcommune.friendlybackup.main.App",
-                "wire",
-                new String[] { "java.lang.String" },
-                new Object[] { configFilePath });
-        
-        backupConfig = invokeStaticMethod(
-                "com.geekcommune.friendlybackup.main.App",
-                "getBackupConfig",
-                new String[0],
-                new Object[0]);
-
-        //Set the password so the dialog doesn't pop up
-        Object swingUIKeyDataSource = invokeMethod(backupConfig, "getKeyDataSource", new Class<?>[0], new Object[0]);
-        invokeMethod(swingUIKeyDataSource, "setPassphrase", new Class<?>[] {char[].class}, new Object[] { "password".toCharArray() });
-        
-        backup = invokeConstructor(
-                "com.geekcommune.friendlybackup.main.Backup",
-                new String[0],
-                new Object[0]);
-
-        restore = invokeConstructor(
-                "com.geekcommune.friendlybackup.main.Restore",
-                new String[0],
-                new Object[0]);
+                "com.geekcommune.friendlybackup.main.Service",
+                "main",
+                new Class[] { String[].class },
+                new Object[] { new String[] { configFilePath } });
     }
 
     Object invokeMethod(Object targetObject, String methodName, String[] argumentClassNames, Object[] arguments) throws Exception {
@@ -55,6 +35,10 @@ public class TestNode {
 
     Object invokeStaticMethod(String targetClassName, String methodName, String[] argumentClassNames, Object[] arguments) throws Exception {
         return invokeMethod(targetClassName, null, methodName, argumentClassNames, arguments);
+    }
+
+    Object invokeStaticMethod(String targetClassName, String methodName, Class<?>[] argumentClasses, Object[] arguments) throws Exception {
+        return invokeMethod(targetClassName, null, methodName, argumentClasses, arguments);
     }
     
     Object invokeMethod(String targetClassName, Object targetObject, String methodName, String[] argumentClassNames, Object[] arguments) throws Exception {
@@ -91,19 +75,11 @@ public class TestNode {
     }
 
     public void backup() throws Exception {
-        invokeMethod(
-                backup,
-                "doBackup",
-                new Class[0],
-                new Object[0]);
+    	new File(configFilePath, "backup.txt").createNewFile();
     }
 
     public void restore() throws Exception {
-        invokeMethod(
-                restore,
-                "doRestore",
-                new Class<?>[0],
-                new Object[0]);
+    	new File(configFilePath, "restore.txt").createNewFile();
     }
 
     public File[] getBackupRootDirectories() throws Exception {
