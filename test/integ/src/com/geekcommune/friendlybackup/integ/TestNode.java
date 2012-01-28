@@ -5,10 +5,19 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URLClassLoader;
 
+import com.geekcommune.friendlybackup.config.BackupConfig;
+import com.geekcommune.friendlybackup.main.Service;
+
+/**
+ * Wrapper around a backup client node (Service instance) for use in integration tests.
+ * @author bobbym
+ *
+ */
 public class TestNode {
 
     private URLClassLoader cl;
-	private String configFilePath;
+	private BackupConfig backupConfig;
+    private Service service;
     
     public TestNode(String configFilePath) throws Exception {
         cl = new URLClassLoader(
@@ -16,13 +25,11 @@ public class TestNode {
                 ClassLoader.getSystemClassLoader().getParent()
             );
 
-        this.configFilePath = configFilePath;
-        
-        invokeStaticMethod(
+        this.service = (Service) invokeConstructor(
                 "com.geekcommune.friendlybackup.main.Service",
-                "main",
-                new Class[] { String[].class },
-                new Object[] { new String[] { configFilePath } });
+                new String[] { "java.lang.String" },
+                new Object[] { configFilePath });
+        backupConfig = (BackupConfig) invokeMethod(service, "getBackupConfig", new Class[0], new Object[0]);
     }
 
     Object invokeMethod(Object targetObject, String methodName, String[] argumentClassNames, Object[] arguments) throws Exception {
@@ -75,11 +82,11 @@ public class TestNode {
     }
 
     public void backup() throws Exception {
-    	new File(configFilePath, "backup.txt").createNewFile();
+        invokeMethod(service, "backup", new Class[0], new Object[0]);
     }
 
     public void restore() throws Exception {
-    	new File(configFilePath, "restore.txt").createNewFile();
+        invokeMethod(service, "restore", new Class[0], new Object[0]);
     }
 
     public File[] getBackupRootDirectories() throws Exception {

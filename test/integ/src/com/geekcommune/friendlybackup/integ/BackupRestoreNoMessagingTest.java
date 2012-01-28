@@ -10,29 +10,32 @@ import com.geekcommune.friendlybackup.main.MockBackupMessageUtil;
 import com.geekcommune.friendlybackup.main.Restore;
 
 public class BackupRestoreNoMessagingTest extends IntegrationTestCase {
+    private App app;
+
     public void testBackupRestoreFakeMessageUtil() throws Exception {
 
-        Backup backup = new Backup();
+        Backup backup = new Backup(app.getBackupConfig());
         backup.doBackup();
         
-        Restore restore = new Restore();
+        Restore restore = new Restore(app.getBackupConfig());
         restore.doRestore();
 
         Assert.assertTrue(compareDirectories(
-                App.getBackupConfig().getBackupRootDirectories()[0],
-                App.getBackupConfig().getRestoreRootDirectory()));
+                app.getBackupConfig().getBackupRootDirectories()[0],
+                app.getBackupConfig().getRestoreRootDirectory()));
     }
 
     public void setUp() throws Exception {
         System.setProperty(App.BACKUP_CONFIG_PROP_KEY, "test/integ/happy1/config/BackupConfig.properties");
-        App.wire();
+        app = new App();
+        app.wire();
 
         char[] passphrase = "password".toCharArray();
-        ((SwingUIKeyDataSource)App.getBackupConfig().getKeyDataSource()).
+        ((SwingUIKeyDataSource)app.getBackupConfig().getKeyDataSource()).
             setPassphrase(passphrase);
 
-        BackupMessageUtil.setInstance(new MockBackupMessageUtil(App.getBackupConfig()));
+        BackupMessageUtil.setInstance(new MockBackupMessageUtil(app.getBackupConfig()));
         
-        cleanDirectory(App.getBackupConfig().getRestoreRootDirectory());
+        cleanDirectory(app.getBackupConfig().getRestoreRootDirectory());
     }
 }
