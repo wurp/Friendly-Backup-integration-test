@@ -12,3 +12,4 @@ test/integ/happy2/config*/db/
 out*
 *.out
 tmp
+*-tmp.*
