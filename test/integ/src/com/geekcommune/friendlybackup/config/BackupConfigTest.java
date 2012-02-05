@@ -5,26 +5,25 @@ import java.io.File;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import com.geekcommune.friendlybackup.main.App;
 import com.geekcommune.identity.SecretIdentity;
 
 public class BackupConfigTest extends TestCase {
-    private App app;
+    private BackupConfig bakcfg;
 
     public void setUp() throws Exception {
-        app = new App();
-        app.wire("test/integ/happy2/config1/BackupConfig.properties");
+        File cfgFile = new File("test/integ/happy2/config1/BackupConfig.properties");
+        bakcfg = new BackupConfig(cfgFile);
     }
     
     public void testKeyInitialization() throws Exception {
         SecretIdentity authOwner =
-                app.getBackupConfig().getAuthenticatedOwner();
+                bakcfg.getAuthenticatedOwner();
         Assert.assertNotNull(authOwner);
     }
     
     public void testBackupTime() throws Exception {
-        Assert.assertEquals(22, app.getBackupConfig().getBackupHour());
-        Assert.assertEquals(20, app.getBackupConfig().getBackupMinute());
+        Assert.assertEquals(22, bakcfg.getBackupHour());
+        Assert.assertEquals(20, bakcfg.getBackupMinute());
     }
     
     public void testToFromProperties() throws Exception {
