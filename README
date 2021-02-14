@@ -1,0 +1,4 @@
+See https://github.com/wurp/Friendly-Backup/wiki
+
+Example commands for diagnosing gpg ring issues:
+gpg --homedir test/integ/happy2/config2/gnupg/ --list-keys

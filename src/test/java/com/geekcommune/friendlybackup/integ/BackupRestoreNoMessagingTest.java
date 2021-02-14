@@ -1,6 +1,8 @@
 package com.geekcommune.friendlybackup.integ;
 
-import junit.framework.Assert;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.Before;
 
 import com.geekcommune.friendlybackup.communication.BackupMessageUtil;
 import com.geekcommune.friendlybackup.config.SwingUIKeyDataSource;
@@ -12,6 +14,18 @@ import com.geekcommune.friendlybackup.main.Restore;
 public class BackupRestoreNoMessagingTest extends IntegrationTestCase {
     private FBNodeApp app;
 
+    @Before
+    public void setUp() throws Exception {
+        System.setProperty(FBNodeApp.BACKUP_CONFIG_PROP_KEY, "test/integ/happy1/config/BackupConfig.properties");
+        app = new FBNodeApp();
+        app.wire();
+
+        BackupMessageUtil.setInstance(new MockBackupMessageUtil(app.getBackupConfig()));
+        
+        cleanDirectory(app.getBackupConfig().getRestoreRootDirectory());
+    }
+
+    @Test
     public void testBackupRestoreFakeMessageUtil() throws Exception {
 
         Backup backup = new Backup(app.getBackupConfig());
@@ -23,19 +37,5 @@ public class BackupRestoreNoMessagingTest extends IntegrationTestCase {
         Assert.assertTrue(compareDirectories(
                 app.getBackupConfig().getBackupRootDirectories()[0],
                 app.getBackupConfig().getRestoreRootDirectory()));
-    }
-
-    public void setUp() throws Exception {
-        System.setProperty(FBNodeApp.BACKUP_CONFIG_PROP_KEY, "test/integ/happy1/config/BackupConfig.properties");
-        app = new FBNodeApp();
-        app.wire();
-
-        char[] passphrase = "password".toCharArray();
-        ((SwingUIKeyDataSource)app.getBackupConfig().getKeyDataSource()).
-            setPassphrase(passphrase);
-
-        BackupMessageUtil.setInstance(new MockBackupMessageUtil(app.getBackupConfig()));
-        
-        cleanDirectory(app.getBackupConfig().getRestoreRootDirectory());
     }
 }

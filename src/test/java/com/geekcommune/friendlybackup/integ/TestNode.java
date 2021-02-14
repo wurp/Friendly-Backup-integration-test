@@ -7,7 +7,7 @@ import com.geekcommune.friendlybackup.main.FBNodeApp;
 import com.geekcommune.integ.ClassloaderProxy;
 
 /**
- * Wrapper around a backup client node (Service instance) for use in integration tests.
+ * Wrapper around a backup client node (FBNodeApp instance) for use in integration tests.
  * @author bobbym
  *
  */
@@ -18,7 +18,7 @@ public class TestNode extends ClassloaderProxy {
     
     public TestNode(String configFilePath) throws Exception {
         this.service = (FBNodeApp) invokeConstructor(
-                "com.geekcommune.friendlybackup.main.Service",
+                "com.geekcommune.friendlybackup.main.FBNodeApp",
                 new String[] { "java.lang.String" },
                 new Object[] { configFilePath });
         backupConfig = (BackupConfig) invokeMethod(service, "getBackupConfig", new Class[0], new Object[0]);
@@ -44,8 +44,8 @@ public class TestNode extends ClassloaderProxy {
         return (File) invokeMethod(backupConfig, "getRestoreRootDirectory", new String[0], new Object[0]);
     }
 
-	public File getDBFile() throws Exception {
+    public File getDBFile() throws Exception {
         return (File) invokeMethod(backupConfig, "getDBFile", new String[0], new Object[0]);
-	}
+    }
 
 }

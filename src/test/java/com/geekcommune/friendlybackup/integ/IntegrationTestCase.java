@@ -8,11 +8,9 @@ import java.util.List;
 
 import org.bouncycastle.util.Arrays;
 
-import junit.framework.TestCase;
-
 import com.geekcommune.util.FileUtil;
 
-public class IntegrationTestCase extends TestCase {
+public class IntegrationTestCase {
 
     protected boolean compareDirectories(
             File dir1,
@@ -38,7 +36,9 @@ public class IntegrationTestCase extends TestCase {
                 
                 if( stripRoot(file1, dir1Canonical).equals(stripRoot(file2, dir2Canonical)) ) {
                     if( file1.isDirectory() ) {
-                        return file2.isDirectory();
+                        if( !file2.isDirectory() ) {
+                            return false;
+			}
                     } else {
                         byte[] contents1 =
                                 FileUtil.instance().getFileContents(file1);

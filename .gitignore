@@ -13,3 +13,5 @@ out*
 *.out
 tmp
 *-tmp.*
+target/**
+/target/

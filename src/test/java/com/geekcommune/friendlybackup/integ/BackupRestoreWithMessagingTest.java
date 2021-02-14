@@ -4,11 +4,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import junit.framework.Assert;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 public class BackupRestoreWithMessagingTest extends IntegrationTestCase {
     private TestNode[] testNodes;
     
+    @Before
     public void setUp() throws Exception {
         testNodes = makeTestNodes(new String[] {
                 "test/integ/happy2/config1/BackupConfig.properties",
@@ -18,6 +21,7 @@ public class BackupRestoreWithMessagingTest extends IntegrationTestCase {
                 });
     }
 
+    @Test
     public void testBackupRestoreFakeMessageUtil() throws Exception {
         //wait for everyone to get started listening
         Thread.sleep(100);

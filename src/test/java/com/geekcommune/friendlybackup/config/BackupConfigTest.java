@@ -2,30 +2,35 @@ package com.geekcommune.friendlybackup.config;
 
 import java.io.File;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.geekcommune.identity.SecretIdentity;
 
-public class BackupConfigTest extends TestCase {
+public class BackupConfigTest {
     private BackupConfig bakcfg;
 
+    @Before
     public void setUp() throws Exception {
         File cfgFile = new File("test/integ/happy2/config1/BackupConfig.properties");
         bakcfg = new BackupConfig(cfgFile);
     }
     
+    @Test
     public void testKeyInitialization() throws Exception {
         SecretIdentity authOwner =
                 bakcfg.getAuthenticatedOwner();
         Assert.assertNotNull(authOwner);
     }
     
+    @Test
     public void testBackupTime() throws Exception {
         Assert.assertEquals(22, bakcfg.getBackupHour());
         Assert.assertEquals(20, bakcfg.getBackupMinute());
     }
     
+    @Test
     public void testToFromProperties() throws Exception {
         BackupConfig bakcfg = new BackupConfig(new File("test/integ/happy2/config1/BackupConfig.properties"));
         bakcfg.backupConfig = new File("test/integ/happy2/config1/BackupConfig-tmp.properties");
