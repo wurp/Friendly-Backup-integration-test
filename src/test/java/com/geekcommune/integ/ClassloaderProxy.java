@@ -2,7 +2,10 @@ package com.geekcommune.integ;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Use this to interact with multiple instances of a Java app that behave more or less as if they're
@@ -22,12 +25,23 @@ public class ClassloaderProxy {
         super();
 
         cl = new URLClassLoader(
-                ((URLClassLoader)ClassLoader.getSystemClassLoader()).getURLs(),
+                filterOut(((URLClassLoader)ClassLoader.getSystemClassLoader()).getURLs(), "log4j"),
                 ClassLoader.getSystemClassLoader().getParent()
             );
     }
 
-    protected Object invokeMethod(Object targetObject, String methodName, String[] argumentClassNames,
+    private URL[] filterOut(URL[] urLs, String string) {
+    	List<URL> retval = new ArrayList<URL>();
+    	for(URL url : urLs) {
+    		if(!url.toString().contains(string)) {
+    			retval.add(url);
+    		}
+    	}
+    	
+		return retval.toArray(new URL[retval.size()]);
+	}
+
+	protected Object invokeMethod(Object targetObject, String methodName, String[] argumentClassNames,
             Object[] arguments) throws Exception {
                 return invokeMethod(targetObject.getClass().getName(), targetObject, methodName, argumentClassNames, arguments);
             }

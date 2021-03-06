@@ -1,11 +1,10 @@
 package com.geekcommune.friendlybackup.integ;
 
 import org.junit.Assert;
-import org.junit.Test;
 import org.junit.Before;
+import org.junit.Test;
 
 import com.geekcommune.friendlybackup.communication.BackupMessageUtil;
-import com.geekcommune.friendlybackup.config.SwingUIKeyDataSource;
 import com.geekcommune.friendlybackup.main.Backup;
 import com.geekcommune.friendlybackup.main.FBNodeApp;
 import com.geekcommune.friendlybackup.main.MockBackupMessageUtil;
