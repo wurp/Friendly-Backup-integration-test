@@ -10,7 +10,7 @@ export fbdir=$(readlink -m ../Friendly-Backup)
 
 "$fbdir/install.sh" "$testdir"
 cp -r "$srcdir"/dir-to-backup "$testdir"
-cp -r "$srcdir"/gnupg "$testdir"
+cp -r "$srcdir"/gnupg "$testdir/bin/var/"
 cp "$srcdir"/BackupConfig.properties "$testdir"/bin/var/
 cd "$testdir"/bin
 rm -f *.log
