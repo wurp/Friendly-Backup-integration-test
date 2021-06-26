@@ -14,10 +14,14 @@ cd "$RUNDIR"
 # Kill the background processes before exiting
 ###
 function finish {
-  eval kill $CLEANUPPID
+  if [ ! -z "$CLEANUPPID" ]
+  then
+    eval kill $CLEANUPPID
+  fi
 }
 
 trap finish EXIT
+
 ##
 
 # Clean last run
@@ -25,7 +29,9 @@ rm -rf target/integ-working
 
 export fbdir=$(readlink -m ../Friendly-Backup)
 
-for testbasedir in test/integ/happy*
+#TODO bobby uncomment
+#for testbasedir in test/integ/happy*
+for testbasedir in test/integ/happy1
 do
   testname=$(basename $testbasedir)
 
@@ -44,7 +50,7 @@ do
   
     # Clean logs & start process
     pushd "$testdir"
-    rm -f *.log
+    rm -f logs/*.log
     ./bin/run.sh > ./run.out &
     CLEANUPPID="$! $CLEANUPPID "
     popd
@@ -56,7 +62,7 @@ do
   TESTCLIENTBASE=target/integ-working/$testname/client1/
   
   # Start the backup
-  tail -f $TESTCLIENTBASE/service.log | sed '/Starting backup/ q' > /dev/null&
+  tail -f $TESTCLIENTBASE/logs/service.log | sed '/Starting backup/ q' > /dev/null&
   pid=$!
 
   touch "$TESTCLIENTBASE/backup.txt"
@@ -66,10 +72,10 @@ do
 
   echo "Backup started"
 
-  tail -f $TESTCLIENTBASE/service.log | sed '/Backup complete/ q' > /dev/null
+  tail -f $TESTCLIENTBASE/logs/service.log | sed '/Backup complete/ q' > /dev/null
   echo "Backup complete"
   
-  tail -f $TESTCLIENTBASE/service.log | sed '/Starting restore/ q' > /dev/null&
+  tail -f $TESTCLIENTBASE/logs/service.log | sed '/Starting restore/ q' > /dev/null&
   pid=$!
 
   touch "$TESTCLIENTBASE/restore.txt"
@@ -77,8 +83,11 @@ do
   echo "Waiting for restore to start"
   wait $pid
   echo "Restore started"
-  tail -f $TESTCLIENTBASE/service.log | sed '/Restore complete/ q' > /dev/null
+  tail -f $TESTCLIENTBASE/logs/service.log | sed '/Restore complete/ q' > /dev/null
   echo "Restore complete"
+
+  eval kill $CLEANUPPID
+  CLEANUPPID=
   
   if diff -qr "$TESTCLIENTBASE/dir-to-backup/" "$TESTCLIENTBASE/restore-dir/"
   then
